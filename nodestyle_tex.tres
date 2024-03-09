@@ -1,0 +1,8 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=3 uid="uid://n7gxo7rffok8"]
+
+[ext_resource type="Texture2D" uid="uid://degc77gunmexj" path="res://icon.svg" id="1_dyw2q"]
+
+[resource]
+texture = ExtResource("1_dyw2q")
+texture_margin_top = 3.0
+region_rect = Rect2(10, 9.5, 108, 109)

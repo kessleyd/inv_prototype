@@ -1,0 +1,29 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="diablo_inventory"
+run/main_scene="res://src/inventory/InvGrid.tscn"
+config/features=PackedStringArray("4.1", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+SignalBus="*res://src/SignalBus.gd"
+Inventory="*res://src/inventory/Inventory.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/protobuf/plugin.cfg")
+
+[layer_names]
+
+2d_physics/layer_1="inventory_layer"

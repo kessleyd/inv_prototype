@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://w38dwpm2626n"]
+
+[ext_resource type="PackedScene" uid="uid://bs4dlk1705brk" path="res://src/inventory/InvGrid.tscn" id="1_rakl5"]
+[ext_resource type="PackedScene" uid="uid://ckldh0a5cojjh" path="res://src/inventory/Draggable.tscn" id="2_temp0"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="InvGridContainer" parent="." instance=ExtResource("1_rakl5")]
+offset_top = 1.0
+offset_bottom = 41.0
+best_fit_buffer = Vector2(50, 50)
+
+[node name="Draggable" parent="." instance=ExtResource("2_temp0")]
+offset_left = 932.0
+offset_top = 155.0
+offset_right = 932.0
+offset_bottom = 155.0
