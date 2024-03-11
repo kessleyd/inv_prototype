@@ -661,6 +661,265 @@ class PBPacker:
 ############### USER DATA BEGIN ################
 
 
+enum MESSAGE_ID {
+	UNKNOWN_MSG = 0,
+	DUMB_REQUEST = 1,
+	INV_UNIT_INFO = 100,
+	INV_CONTAINER_REQ = 101,
+	INV_CONTAINER_RSP = 102
+}
+
+class DUMB_REQUEST:
+	func _init():
+		var service
+		
+		_req_msg = PBField.new("req_msg", PB_DATA_TYPE.ENUM, PB_RULE.OPTIONAL, 0, true, DEFAULT_VALUES_3[PB_DATA_TYPE.ENUM])
+		service = PBServiceField.new()
+		service.field = _req_msg
+		data[_req_msg.tag] = service
+		
+	var data = {}
+	
+	var _req_msg: PBField
+	func get_req_msg():
+		return _req_msg.value
+	func clear_req_msg() -> void:
+		data[0].state = PB_SERVICE_STATE.UNFILLED
+		_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.ENUM]
+	func set_req_msg(value) -> void:
+		_req_msg.value = value
+	
+	func _to_string() -> String:
+		return PBPacker.message_to_string(data)
+		
+	func to_bytes() -> PackedByteArray:
+		return PBPacker.pack_message(data)
+		
+	func from_bytes(bytes : PackedByteArray, offset : int = 0, limit : int = -1) -> int:
+		var cur_limit = bytes.size()
+		if limit != -1:
+			cur_limit = limit
+		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
+		if result == cur_limit:
+			if PBPacker.check_required(data):
+				if limit == -1:
+					return PB_ERR.NO_ERRORS
+			else:
+				return PB_ERR.REQUIRED_FIELDS
+		elif limit == -1 && result > 0:
+			return PB_ERR.PARSE_INCOMPLETE
+		return result
+	
+class Header:
+	func _init():
+		var service
+		
+		_msg_id = PBField.new("msg_id", PB_DATA_TYPE.ENUM, PB_RULE.OPTIONAL, 0, true, DEFAULT_VALUES_3[PB_DATA_TYPE.ENUM])
+		service = PBServiceField.new()
+		service.field = _msg_id
+		data[_msg_id.tag] = service
+		
+		_bus_mask = PBField.new("bus_mask", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		service = PBServiceField.new()
+		service.field = _bus_mask
+		data[_bus_mask.tag] = service
+		
+		_timestamp = PBField.new("timestamp", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
+		service = PBServiceField.new()
+		service.field = _timestamp
+		data[_timestamp.tag] = service
+		
+	var data = {}
+	
+	var _msg_id: PBField
+	func get_msg_id():
+		return _msg_id.value
+	func clear_msg_id() -> void:
+		data[0].state = PB_SERVICE_STATE.UNFILLED
+		_msg_id.value = DEFAULT_VALUES_3[PB_DATA_TYPE.ENUM]
+	func set_msg_id(value) -> void:
+		_msg_id.value = value
+	
+	var _bus_mask: PBField
+	func get_bus_mask() -> int:
+		return _bus_mask.value
+	func clear_bus_mask() -> void:
+		data[1].state = PB_SERVICE_STATE.UNFILLED
+		_bus_mask.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+	func set_bus_mask(value : int) -> void:
+		_bus_mask.value = value
+	
+	var _timestamp: PBField
+	func get_timestamp() -> float:
+		return _timestamp.value
+	func clear_timestamp() -> void:
+		data[2].state = PB_SERVICE_STATE.UNFILLED
+		_timestamp.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
+	func set_timestamp(value : float) -> void:
+		_timestamp.value = value
+	
+	func _to_string() -> String:
+		return PBPacker.message_to_string(data)
+		
+	func to_bytes() -> PackedByteArray:
+		return PBPacker.pack_message(data)
+		
+	func from_bytes(bytes : PackedByteArray, offset : int = 0, limit : int = -1) -> int:
+		var cur_limit = bytes.size()
+		if limit != -1:
+			cur_limit = limit
+		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
+		if result == cur_limit:
+			if PBPacker.check_required(data):
+				if limit == -1:
+					return PB_ERR.NO_ERRORS
+			else:
+				return PB_ERR.REQUIRED_FIELDS
+		elif limit == -1 && result > 0:
+			return PB_ERR.PARSE_INCOMPLETE
+		return result
+	
+class GameMessage:
+	func _init():
+		var service
+		
+		_header = PBField.new("header", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 0, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		service = PBServiceField.new()
+		service.field = _header
+		service.func_ref = Callable(self, "new_header")
+		data[_header.tag] = service
+		
+		_dumb_req_msg = PBField.new("dumb_req_msg", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		service = PBServiceField.new()
+		service.field = _dumb_req_msg
+		service.func_ref = Callable(self, "new_dumb_req_msg")
+		data[_dumb_req_msg.tag] = service
+		
+		_inv_unit_info_msg = PBField.new("inv_unit_info_msg", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 100, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		service = PBServiceField.new()
+		service.field = _inv_unit_info_msg
+		service.func_ref = Callable(self, "new_inv_unit_info_msg")
+		data[_inv_unit_info_msg.tag] = service
+		
+		_inv_container_req_msg = PBField.new("inv_container_req_msg", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 101, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
+		service = PBServiceField.new()
+		service.field = _inv_container_req_msg
+		data[_inv_container_req_msg.tag] = service
+		
+		_inv_container_rsp_msg = PBField.new("inv_container_rsp_msg", PB_DATA_TYPE.MESSAGE, PB_RULE.OPTIONAL, 102, true, DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE])
+		service = PBServiceField.new()
+		service.field = _inv_container_rsp_msg
+		service.func_ref = Callable(self, "new_inv_container_rsp_msg")
+		data[_inv_container_rsp_msg.tag] = service
+		
+	var data = {}
+	
+	var _header: PBField
+	func get_header() -> Header:
+		return _header.value
+	func clear_header() -> void:
+		data[0].state = PB_SERVICE_STATE.UNFILLED
+		_header.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_header() -> Header:
+		_header.value = Header.new()
+		return _header.value
+	
+	var _dumb_req_msg: PBField
+	func has_dumb_req_msg() -> bool:
+		return data[1].state == PB_SERVICE_STATE.FILLED
+	func get_dumb_req_msg() -> DUMB_REQUEST:
+		return _dumb_req_msg.value
+	func clear_dumb_req_msg() -> void:
+		data[1].state = PB_SERVICE_STATE.UNFILLED
+		_dumb_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_dumb_req_msg() -> DUMB_REQUEST:
+		data[1].state = PB_SERVICE_STATE.FILLED
+		_inv_unit_info_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[100].state = PB_SERVICE_STATE.UNFILLED
+		_inv_container_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+		data[101].state = PB_SERVICE_STATE.UNFILLED
+		_inv_container_rsp_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[102].state = PB_SERVICE_STATE.UNFILLED
+		_dumb_req_msg.value = DUMB_REQUEST.new()
+		return _dumb_req_msg.value
+	
+	var _inv_unit_info_msg: PBField
+	func has_inv_unit_info_msg() -> bool:
+		return data[100].state == PB_SERVICE_STATE.FILLED
+	func get_inv_unit_info_msg() -> InvUnitInfo:
+		return _inv_unit_info_msg.value
+	func clear_inv_unit_info_msg() -> void:
+		data[100].state = PB_SERVICE_STATE.UNFILLED
+		_inv_unit_info_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_inv_unit_info_msg() -> InvUnitInfo:
+		_dumb_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[1].state = PB_SERVICE_STATE.UNFILLED
+		data[100].state = PB_SERVICE_STATE.FILLED
+		_inv_container_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+		data[101].state = PB_SERVICE_STATE.UNFILLED
+		_inv_container_rsp_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[102].state = PB_SERVICE_STATE.UNFILLED
+		_inv_unit_info_msg.value = InvUnitInfo.new()
+		return _inv_unit_info_msg.value
+	
+	var _inv_container_req_msg: PBField
+	func has_inv_container_req_msg() -> bool:
+		return data[101].state == PB_SERVICE_STATE.FILLED
+	func get_inv_container_req_msg() -> int:
+		return _inv_container_req_msg.value
+	func clear_inv_container_req_msg() -> void:
+		data[101].state = PB_SERVICE_STATE.UNFILLED
+		_inv_container_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+	func set_inv_container_req_msg(value : int) -> void:
+		_dumb_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[1].state = PB_SERVICE_STATE.UNFILLED
+		_inv_unit_info_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[100].state = PB_SERVICE_STATE.UNFILLED
+		data[101].state = PB_SERVICE_STATE.FILLED
+		_inv_container_rsp_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[102].state = PB_SERVICE_STATE.UNFILLED
+		_inv_container_req_msg.value = value
+	
+	var _inv_container_rsp_msg: PBField
+	func has_inv_container_rsp_msg() -> bool:
+		return data[102].state == PB_SERVICE_STATE.FILLED
+	func get_inv_container_rsp_msg() -> InvContainerData:
+		return _inv_container_rsp_msg.value
+	func clear_inv_container_rsp_msg() -> void:
+		data[102].state = PB_SERVICE_STATE.UNFILLED
+		_inv_container_rsp_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+	func new_inv_container_rsp_msg() -> InvContainerData:
+		_dumb_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[1].state = PB_SERVICE_STATE.UNFILLED
+		_inv_unit_info_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.MESSAGE]
+		data[100].state = PB_SERVICE_STATE.UNFILLED
+		_inv_container_req_msg.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
+		data[101].state = PB_SERVICE_STATE.UNFILLED
+		data[102].state = PB_SERVICE_STATE.FILLED
+		_inv_container_rsp_msg.value = InvContainerData.new()
+		return _inv_container_rsp_msg.value
+	
+	func _to_string() -> String:
+		return PBPacker.message_to_string(data)
+		
+	func to_bytes() -> PackedByteArray:
+		return PBPacker.pack_message(data)
+		
+	func from_bytes(bytes : PackedByteArray, offset : int = 0, limit : int = -1) -> int:
+		var cur_limit = bytes.size()
+		if limit != -1:
+			cur_limit = limit
+		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
+		if result == cur_limit:
+			if PBPacker.check_required(data):
+				if limit == -1:
+					return PB_ERR.NO_ERRORS
+			else:
+				return PB_ERR.REQUIRED_FIELDS
+		elif limit == -1 && result > 0:
+			return PB_ERR.PARSE_INCOMPLETE
+		return result
+	
 class InvNodeUnit:
 	func _init():
 		var service

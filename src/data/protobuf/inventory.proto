@@ -1,31 +1,32 @@
-syntax = "proto3";
+syntax="proto3";
 
 message InvNodeUnit {
-    float node_width = 0;
-    float node_height = 1;
-    float node_margin = 2;
-    float container_border_margin = 3;
+    float node_width=0;
+    float node_height=1;
+    float node_margin=2;
+    float container_border_margin=3;
 }
 
 message InvItemUnit {
-    float item_width = 0;
-    float item_height = 1;
-    oneof placement {
-        bool centered = 2;
-        float item_offset = 3;
-    }
+    float item_width=0;
+    float item_height=1;
+    float item_margin=2;
 }
 
 message InvItemData {
-    int32 item_id = 0;
-    int32 item_cols = 1;
-    int32 item_rows = 2;
-    int32 host_container_id = 3;
+    int32 item_id=0;
+    int32 item_cols=1;
+    int32 item_rows=2;
 }
 
 message InvContainerData {
-    int32 container_id = 0;
-    int32 container_cols = 1;
-    int32 container_rows = 2;
-    repeated InvItemData occupants = 3;
+    int32 container_id=0;
+    int32 container_cols=1;
+    int32 container_rows=2;
+    repeated InvItemData occupants=3;
+}
+
+message InvUnitInfo {
+    InvNodeUnit node_info=0;
+    InvItemUnit item_info=1;
 }

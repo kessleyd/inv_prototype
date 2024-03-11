@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "./inventory.proto";
+
+enum MESSAGE_ID {
+    UNKNOWN_MSG=0;
+    DUMB_REQUEST=1;
+    INV_UNIT_INFO=100;
+    INV_CONTAINER_REQ=101;
+    INV_CONTAINER_RSP=102;
+}
+
+message DUMB_REQUEST {
+    MESSAGE_ID req_msg=0;
+}
+
+message Header {
+    MESSAGE_ID msg_id=0;
+    int32 bus_mask=1;
+    float timestamp=2;
+}
+
+message GameMessage {
+    Header header=0;
+    oneof body{
+        DUMB_REQUEST dumb_req_msg=1;
+        InvUnitInfo inv_unit_info_msg=100;
+        int32 inv_container_req_msg=101;
+        InvContainerData inv_container_rsp_msg=102;
+    }
+}

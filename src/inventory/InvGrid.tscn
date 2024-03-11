@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bs4dlk1705brk"]
 
-[ext_resource type="Script" path="res://src/inventory/InvGridContainer.gd" id="1_1lxoa"]
+[ext_resource type="Script" path="res://src/inventory/InvGridDisplay.gd" id="1_35ugh"]
 [ext_resource type="StyleBox" uid="uid://d4j1ybto874ad" path="res://nodestyle.tres" id="2_3tqoj"]
 [ext_resource type="StyleBox" uid="uid://bi1qvykfcgg2l" path="res://nodestyle_select.tres" id="3_1q3o1"]
 [ext_resource type="StyleBox" uid="uid://cq4tknbqrxcu2" path="res://nodestyle_deny.tres" id="4_wbjoq"]
@@ -10,7 +10,7 @@
 [node name="InvGridContainer" type="Container"]
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_1lxoa")
+script = ExtResource("1_35ugh")
 node_style = ExtResource("2_3tqoj")
 node_select_style = ExtResource("3_1q3o1")
 node_deny_style = ExtResource("4_wbjoq")
